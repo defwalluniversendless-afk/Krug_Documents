@@ -1,0 +1,27 @@
+<!doctype html><html lang="ru" data-theme="dark"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Документ</title><link rel="stylesheet" href="../style.css"><script src="../theme.js"></script></head>
+<body><main>
+<div class="top"><a class="brand" href="../"><img src="../logo.png" alt="">круг <i>· документы</i></a><button class="pill" id="theme" type="button" aria-label="Сменить тему">светлая</button></div>
+<a class="back" href="../">← все документы</a><div id="d">Загрузка…</div>
+<footer>Исполнитель: Илья Хабиров, ИНН 027816533640 · <a href="mailto:universe.endless.official@protonmail.com">universe.endless.official@protonmail.com</a></footer></main>
+<script>
+var slug=location.pathname.split('/').filter(Boolean).pop().replace('.html','');
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function inl(s){s=esc(s);
+ s=s.replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\*([^*]+)\*/g,'<i>$1</i>');
+ s=s.replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g,'<a href="$2">$1</a>');
+ s=s.replace(/(^|[\s(])(https?:\/\/[^\s<)]+[^\s<).,;])/g,'$1<a href="$2">$2</a>');
+ return s.replace(/([\w.+-]+@[\w-]+\.[\w.-]+[\w])/g,function(m,e,o,str){return str.slice(o-1,o)=='>'||str.slice(o-7,o)=='mailto:'?m:'<a href="mailto:'+e+'">'+e+'</a>'})}
+function md(t){var h='',ul=false;
+ t.split('\n').forEach(function(l){l=l.trim();
+  if(l.indexOf('- ')==0){if(!ul){h+='<ul>';ul=true}h+='<li>'+inl(l.slice(2))+'</li>';return}
+  if(ul){h+='</ul>';ul=false}
+  if(!l)return;
+  var m=l.match(/^(#{1,3}) (.*)/);
+  h+=m?'<h'+m[1].length+'>'+inl(m[2])+'</h'+m[1].length+'>':'<p>'+inl(l)+'</p>'});
+ return h+(ul?'</ul>':'')}
+fetch('../docs/'+slug+'.md?'+Date.now()).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){
+ document.getElementById('d').innerHTML=md(t);var h=document.querySelector('h1');if(h)document.title=h.textContent
+}).catch(function(){document.getElementById('d').textContent='Документ не найден.'})
+</script></body></html>
